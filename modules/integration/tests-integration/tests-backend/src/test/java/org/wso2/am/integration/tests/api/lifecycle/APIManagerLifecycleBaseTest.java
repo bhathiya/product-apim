@@ -268,6 +268,11 @@ public class APIManagerLifecycleBaseTest extends APIMIntegrationBaseTest {
         if (createAPIResponse.getResponseCode() == HTTP_RESPONSE_CODE_OK &&
                 getValueFromJSON(createAPIResponse, "error").equals("false")) {
             log.info("API Created :" + getAPIIdentifierString(apiIdentifier));
+            try {
+                Thread.sleep(1000); //This is required to set a time difference between timestamps of current state and next
+            } catch (InterruptedException e) {
+                throw new APIManagerIntegrationTestException(e.getMessage(), e);
+            }
             //Publish the API
             HttpResponse publishAPIResponse = publishAPI(apiIdentifier, publisherRestClient, isRequireReSubscription);
             if (!(publishAPIResponse.getResponseCode() == HTTP_RESPONSE_CODE_OK &&
