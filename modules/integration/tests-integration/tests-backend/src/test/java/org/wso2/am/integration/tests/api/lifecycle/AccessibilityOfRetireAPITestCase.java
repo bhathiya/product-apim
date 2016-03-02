@@ -119,12 +119,12 @@ public class AccessibilityOfRetireAPITestCase extends APIManagerLifecycleBaseTes
             dependsOnMethods = "testInvokeAPIBeforeChangeAPILifecycleToRetired") 
     public void testChangeAPILifecycleToDepricated() throws Exception {
         //DEPRECATE the API version 1.0.0
-        APILifeCycleStateRequest blockUpdateRequest =
+        APILifeCycleStateRequest deprecateUpdateRequest =
                 new APILifeCycleStateRequest(API_NAME, providerName, APILifeCycleState.DEPRECATED);
-        blockUpdateRequest.setVersion(API_VERSION_1_0_0);
+        deprecateUpdateRequest.setVersion(API_VERSION_1_0_0);
         //Change API lifecycle  to DEPRECATED
         HttpResponse blockAPIActionResponse =
-                apiPublisherRestClient.changeAPILifeCycleStatus(blockUpdateRequest);
+                apiPublisherRestClient.changeAPILifeCycleStatus(deprecateUpdateRequest);
         assertEquals(blockAPIActionResponse.getResponseCode(), HTTP_RESPONSE_CODE_OK, "Response code mismatched");
         assertTrue(verifyAPIStatusChange(blockAPIActionResponse, APILifeCycleState.PUBLISHED,
                 APILifeCycleState.DEPRECATED), "API status Change is invalid when retire an API :" +
@@ -137,12 +137,12 @@ public class AccessibilityOfRetireAPITestCase extends APIManagerLifecycleBaseTes
             dependsOnMethods = "testChangeAPILifecycleToDepricated") 
     public void testChangeAPILifecycleToRetired() throws APIManagerIntegrationTestException {
         //RETIRE the API version 1.0.0
-        APILifeCycleStateRequest blockUpdateRequest =
+        APILifeCycleStateRequest retireUpdateRequest =
                 new APILifeCycleStateRequest(API_NAME, providerName, APILifeCycleState.RETIRED);
-        blockUpdateRequest.setVersion(API_VERSION_1_0_0);
+        retireUpdateRequest.setVersion(API_VERSION_1_0_0);
         //Change API lifecycle  to RETIRED
         HttpResponse blockAPIActionResponse =
-                apiPublisherRestClient.changeAPILifeCycleStatus(blockUpdateRequest);
+                apiPublisherRestClient.changeAPILifeCycleStatus(retireUpdateRequest);
         assertEquals(blockAPIActionResponse.getResponseCode(), HTTP_RESPONSE_CODE_OK, "Response code mismatched");
         assertTrue(verifyAPIStatusChange(blockAPIActionResponse, APILifeCycleState.DEPRECATED,
                 APILifeCycleState.RETIRED), "API status Change is invalid when retire an API :" +
@@ -154,9 +154,6 @@ public class AccessibilityOfRetireAPITestCase extends APIManagerLifecycleBaseTes
     @Test(groups = {"wso2.am"}, description = "Test the availability of retired API in the store",
             dependsOnMethods = "testChangeAPILifecycleToRetired")
     public void testAvailabilityOfRetiredAPIInStore() throws Exception {
-
-        waitForAPIDeploymentSync(user.getUserName(), API_NAME, API_VERSION_1_0_0,
-                                 APIMIntegrationConstants.IS_API_NOT_EXISTS);
         //  Verify the API in API Store : API should not be available in the store.
         List<APIIdentifier> apiStoreAPIIdentifierList = APIMTestCaseUtils.getAPIIdentifierListFromHttpResponse(
                 apiStoreRestClient.getAPI());
