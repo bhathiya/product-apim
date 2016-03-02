@@ -420,7 +420,7 @@ public class APIMIntegrationBaseTest {
         long currentTime = System.currentTimeMillis();
         long waitTime = currentTime + WAIT_TIME;
 
-        if (executionMode.equalsIgnoreCase(String.valueOf(ExecutionEnvironment.PLATFORM))) {
+        //if (executionMode.equalsIgnoreCase(String.valueOf(ExecutionEnvironment.PLATFORM))) {
 
             while (waitTime > System.currentTimeMillis()) {
                 HttpResponse response = null;
@@ -450,7 +450,7 @@ public class APIMIntegrationBaseTest {
                     }
                 }
             }
-        }
+       // }
     }
 
     /**
@@ -471,7 +471,7 @@ public class APIMIntegrationBaseTest {
         long currentTime = System.currentTimeMillis();
         long waitTime = currentTime + WAIT_TIME;
 
-        if (executionMode.equalsIgnoreCase(String.valueOf(ExecutionEnvironment.PLATFORM))) {
+        //if (executionMode.equalsIgnoreCase(String.valueOf(ExecutionEnvironment.PLATFORM))) {
 
             while (waitTime > System.currentTimeMillis()) {
                 HttpResponse response = HttpRequestUtil.sendGetRequest(getGatewayURLHttp() +
@@ -494,7 +494,7 @@ public class APIMIntegrationBaseTest {
                     }
                 }
             }
-        }
+       // }
     }
 }
 
