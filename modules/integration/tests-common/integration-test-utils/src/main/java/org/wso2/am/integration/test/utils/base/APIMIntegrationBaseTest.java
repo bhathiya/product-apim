@@ -61,7 +61,8 @@ import java.util.regex.Matcher;
 public class APIMIntegrationBaseTest {
 
     private static final Log log = LogFactory.getLog(APIMIntegrationBaseTest.class);
-    protected AutomationContext storeContext, publisherContext, keyManagerContext, gatewayContextMgt, gatewayContextWrk, backEndServer;
+    protected AutomationContext storeContext, publisherContext, keyManagerContext, gatewayContextMgt,
+            gatewayContextWrk, backEndServer, superTenantKeyManagerContext;
     protected OMElement synapseConfiguration;
     protected APIMTestCaseUtils apimTestCaseUtils;
     protected TestUserMode userMode;
@@ -76,6 +77,7 @@ public class APIMIntegrationBaseTest {
     protected String publisherURLHttp;
     protected String storeURLHttp;
     protected String keymanagerSessionCookie;
+    protected String keymanagerSuperTenantSessionCookie;
 
     /**
      * This method will initialize test environment
@@ -86,20 +88,6 @@ public class APIMIntegrationBaseTest {
     protected void init() throws APIManagerIntegrationTestException {
         userMode = TestUserMode.SUPER_TENANT_ADMIN;
         init(userMode);
-        keymanagerSessionCookie = createSession(keyManagerContext);
-        publisherURLHttp = publisherUrls.getWebAppURLHttp();
-        storeURLHttp = storeUrls.getWebAppURLHttp();
-        apiPublisher = new APIPublisherRestClient(publisherURLHttp);
-        apiStore = new APIStoreRestClient(storeURLHttp);
-
-        try {
-            userManagementClient = new UserManagementClient(
-                    keyManagerContext.getContextUrls().getBackEndUrl(), keymanagerSessionCookie);
-            tenantManagementServiceClient = new TenantManagementServiceClient(
-                    keyManagerContext.getContextUrls().getBackEndUrl(), keymanagerSessionCookie);
-        } catch (Exception e) {
-            throw new APIManagerIntegrationTestException(e.getMessage(), e);
-        }
     }
 
     /**
@@ -147,6 +135,26 @@ public class APIMIntegrationBaseTest {
             executionMode = gatewayContextMgt.getConfigurationValue(ContextXpathConstants.EXECUTION_ENVIRONMENT);
 
             user = storeContext.getContextTenant().getContextUser();
+
+            superTenantKeyManagerContext = new AutomationContext(APIMIntegrationConstants.AM_PRODUCT_GROUP_NAME,
+                                                      APIMIntegrationConstants.AM_KEY_MANAGER_INSTANCE,
+                                                      TestUserMode.SUPER_TENANT_ADMIN);
+
+            keymanagerSessionCookie = createSession(keyManagerContext);
+            publisherURLHttp = publisherUrls.getWebAppURLHttp();
+            storeURLHttp = storeUrls.getWebAppURLHttp();
+            apiPublisher = new APIPublisherRestClient(publisherURLHttp);
+            apiStore = new APIStoreRestClient(storeURLHttp);
+
+            try {
+                keymanagerSuperTenantSessionCookie = new LoginLogoutClient(superTenantKeyManagerContext).login();
+                userManagementClient = new UserManagementClient(
+                        keyManagerContext.getContextUrls().getBackEndUrl(), keymanagerSessionCookie);
+                tenantManagementServiceClient = new TenantManagementServiceClient(
+                        keyManagerContext.getContextUrls().getBackEndUrl(), keymanagerSuperTenantSessionCookie);
+            } catch (Exception e) {
+                throw new APIManagerIntegrationTestException(e.getMessage(), e);
+            }
 
         } catch (XPathExpressionException e) {
             log.error("APIM test environment initialization failed", e);
