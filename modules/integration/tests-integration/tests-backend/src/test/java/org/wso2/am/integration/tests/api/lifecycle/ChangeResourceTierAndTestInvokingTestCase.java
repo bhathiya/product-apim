@@ -18,6 +18,8 @@
 
 package org.wso2.am.integration.tests.api.lifecycle;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -143,6 +145,9 @@ public class ChangeResourceTierAndTestInvokingTestCase extends APIManagerLifecyc
                      "Response code mismatched. Invocation attempt:" + (GOLD_INVOCATION_LIMIT_PER_MIN + 1) +
                      " passed  during :" + (currentTime - startTime) + " milliseconds under Gold API , " +
                      "Gold Application level tier and Unlimited Resource tier.");
+        Log log = LogFactory.getLog(ChangeResourceTierAndTestInvokingTestCase.class);
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info(invokeResponse.getData());
         assertTrue(invokeResponse.getData().contains(MESSAGE_THROTTLED_OUT),
                    "Response data mismatched. Invocation attempt:" + (GOLD_INVOCATION_LIMIT_PER_MIN + 1) +
                    " passed  during :" + (currentTime - startTime) + " milliseconds under Gold API , " +
